@@ -16,11 +16,11 @@
 	tiempo db "10", 24h
 
 .code
+	extrn normalize:proc ; llamada externa a normalize
+	
 	main proc
 	mov ax, @data
 	mov ds, ax
-
-	
 
 template:
 	mov ah, 9					;servicio 9, print dx
@@ -59,6 +59,7 @@ carga:
 	int 21h
 	cmp al, 0dh
 	je fincarga
+	call normalize
 	mov input[bx], al 
 	inc bx
 	jmp carga
@@ -84,6 +85,11 @@ comparacion:
 
 
 gameover:
+
+	;mov ah,9
+	;mov dx, offset input
+	;int 21h
+
 	mov ah,9
 	mov dx, offset mensajeperdiste
 	int 21h
@@ -93,6 +99,10 @@ gameover:
 
 win:
 
+	;mov ah,9
+	;mov dx, offset input
+	;int 21h
+
 	mov ah,9
 	mov dx, offset mensajewin
 	int 21h
@@ -100,6 +110,7 @@ win:
 	jmp fin
 
 fin:
+	xor ax, ax
 	mov ax, 4c00h					;servicio para salir de DOS
 	int 21h
 
