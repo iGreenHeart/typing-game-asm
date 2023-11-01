@@ -86,9 +86,9 @@ comparacion:
 
 gameover:
 
-	;mov ah,9
-	;mov dx, offset input
-	;int 21h
+	mov ah,9
+	mov dx, offset input
+	int 21h
 
 	mov ah,9
 	mov dx, offset mensajeperdiste
@@ -99,9 +99,9 @@ gameover:
 
 win:
 
-	;mov ah,9
-	;mov dx, offset input
-	;int 21h
+	mov ah,9
+	mov dx, offset input
+	int 21h
 
 	mov ah,9
 	mov dx, offset mensajewin
@@ -110,7 +110,7 @@ win:
 	jmp fin
 
 fin:
-	xor ax, ax
+	;xor ax, ax
 	mov ax, 4c00h					;servicio para salir de DOS
 	int 21h
 
