@@ -1,0 +1,11 @@
+# Ignore object files
+*.OBJ
+
+# Ignore executable files
+*.EXE
+
+# Ignore map files
+*.MAP
+
+# 
+.DS_Store
