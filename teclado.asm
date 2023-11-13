@@ -1,8 +1,12 @@
 .8086
 .model small
+.stack 100h
 .data
     teclaanterior db 0
+
 .code
+extrn esletra:proc
+
 
 inicio:
     mov al, 1           ; Configurar AL en 1 para habilitar la interrupción del teclado
@@ -12,10 +16,8 @@ inicio:
     cmp teclaanterior, al 
     je esperar_tecla
     mov teclaanterior, al
-; Imprime la tecla en pantalla
-    mov ah, 0eh
-    int 10h           
-    jmp inicio           ; Volver a leer la siguiente tecla
+    call esletra
+    jmp esperar_tecla
 
 fin_programa:
     mov al, 0           ; Configurar AL en 0 para deshabilitar la interrupción del teclado
@@ -23,3 +25,4 @@ fin_programa:
     mov ax,4c00h       
     int 21h             
 end inicio
+
