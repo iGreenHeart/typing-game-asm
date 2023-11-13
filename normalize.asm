@@ -1,31 +1,48 @@
 .8086
 .model small
 .stack 100h
-.data
+
+.data 
+
 
 .code
 
-public normalizeRay
+public mayusculizar 
 
-	normalizeRay proc
+	;Parametros:
+	; BX = offset del string a modificar
 
-recorroNorm:	
-	cmp al, 60h		;Es mayor a "a"
-	ja casiMinus	;Salto a normalizar (Resto 20h)
-	jmp finNormalize
+	mayusculizar proc
+
+inicioComp:
+	
+	cmp byte ptr[bx], 0dh
+	je finNormalize
+
+	cmp byte ptr[bx], 24h
+	je finNormalize
+
+	cmp byte ptr[bx], 60h
+	ja casiMinus
+	jmp siguiente
 
 casiMinus:
-	cmp al, 7Bh		;Es menor a "z"
-	jb normalize	;Salto a normalizar (Resto 20h)
-	jmp finNormalize
+	cmp byte ptr[bx], 7Bh
+	jb esMinus
+	jmp siguiente
 
-normalize:
-
-	sub al, 20h
+esMinus:
+	sub byte ptr[bx], 20h
+	inc bx
+	jmp inicioComp
 
 finNormalize:
-
 	ret
 
-	normalizeRay endp	
+siguiente:
+	inc bx
+	jmp inicioComp
+
+	mayusculizar endp
+
 end
