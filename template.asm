@@ -17,7 +17,8 @@
 
 .code
 	extrn normalize:proc ; llamada externa a normalize
-	
+	extrn cajaCarga:proc	
+
 	main proc
 	mov ax, @data
 	mov ds, ax
@@ -51,20 +52,10 @@ template:
 	mov dx, offset mensajeTiempo2	
 	int 21h	
 
-	mov bx, 0
-	mov si, 0
+	lea bx, input ;MOV BX, OFFSET INPUT
+	call cajaCarga
 
-carga:
-	mov ah,1
-	int 21h
-	cmp al, 0dh
-	je fincarga
-	call normalize
-	mov input[bx], al 
-	inc bx
-	jmp carga
 
-fincarga:
 	mov bx, 0
 	mov si, 0
 comparacion:

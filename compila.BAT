@@ -1,3 +1,3 @@
-tasm %1
-tlink %1
-%1
+tasm /zi %1
+tlink /v  %1
+td %1.exe

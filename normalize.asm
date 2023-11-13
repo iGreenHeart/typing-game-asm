@@ -5,25 +5,26 @@
 
 .code
 
-	public normalize
+public normalizeRay
 
 	normalizeRay proc
-	
-	cmp al, 60h		;Es mayor a "a"
-	ja normalize	;Salto a normalizar (Resto 20h)
 
+recorroNorm:	
+	cmp al, 60h		;Es mayor a "a"
+	ja casiMinus	;Salto a normalizar (Resto 20h)
+	jmp finNormalize
+
+casiMinus:
 	cmp al, 7Bh		;Es menor a "z"
 	jb normalize	;Salto a normalizar (Resto 20h)
-	
 	jmp finNormalize
 
 normalize:
 
 	sub al, 20h
-	ret	
 
 finNormalize:
-	
+
 	ret
 
 	normalizeRay endp	
