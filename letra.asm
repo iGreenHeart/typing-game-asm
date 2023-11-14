@@ -8,8 +8,10 @@
 public esletra
 esletra proc
 
+push ax
 mov teclaanterior, al
-
+mov dx,0
+;Uso SI para antirebote? quizas se pueda borrar
 LetraesA:
 ;Es A?
     cmp teclaanterior, 1Eh
@@ -17,7 +19,7 @@ LetraesA:
     mov ah, 2
     mov dl, 41h
     int 21h
-    inc si
+    inc si 
     jmp retorno
 LetraesB:
     cmp teclaanterior, 30h
@@ -222,9 +224,10 @@ LetraesZ:
 
 
 sigo:
+pop ax
 ret
 retorno: 
-mov dx, 1
+mov dx, 1 ;contador
 ret
 esletra endp
 end
