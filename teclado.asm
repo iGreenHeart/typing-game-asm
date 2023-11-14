@@ -21,12 +21,13 @@ inicio:
     mov al, 1           ; Configurar AL en 1 para habilitar la interrupción del teclado
     out 64h, al         ; Enviar 1 al puerto 64h (puerto de control del teclado)
 
-;Por alguna razón, esto sirve para limpiar el buffer! Cuando inicio el programa el último 
-;enter presionado, queda guardado en el buffer.
+;Con el servicio 8, vos lees una cadena de texto y esto se almacena en el buffer.
+;Funciona para empezar con el buffer "vacio". Ya que al inicializar el programa
+;apretas un "enter", y ese enter queda guardado hasta que se ingrese otra cosa.
     mov ah,08h    
     int 21h
   
-lea bx, palabra
+    lea bx, palabra     ;Apunto bx a palabra para la función
 esperar_tecla:
     in al, 60h ; Leer la tecla desde el puerto 60h del teclado
 
@@ -37,16 +38,13 @@ esperar_tecla:
     cmp al, 0eH     ;Chequeo si es un backspace
     je backspace
 
-    call esletra 
-
+    call esletra
+    ;En esta función, compara cada letra del teclado y la devuelve en DL
+    ;Guarda en [bx] lo que tengo en dl, e incrementa
+    
     cmp al, 1ch     ;Chequeo si es un enter
     je imprimop 
-
- 
-    je imprimop
-jmp esperar_tecla    ;Reinicio el loop
-
-
+    jmp esperar_tecla    ;Reinicio el loop
 
 backspace:              ; Borra la última tecla, y devuelve el puntero a la tecla anterior
 ;Borro, imprimo un espacio y lo borro. De esta manera piso el espacio.
@@ -62,7 +60,6 @@ backspace:              ; Borra la última tecla, y devuelve el puntero a la tec
     dec bx
     jmp esperar_tecla 
 
-
 imprimop: ;Imprimo lo que tengo en palabra
     mov ah, 9
     mov dx, offset anotado
@@ -73,6 +70,7 @@ imprimop: ;Imprimo lo que tengo en palabra
     mov ah, 9
     mov dx, offset palabra
     int 21h
+
 fin_programa: 
     mov al, 0           ; Configurar AL en 0 para deshabilitar la interrupción del teclado
     out 64h, al         ; Enviar 0 al puerto 64h para deshabilitar la interrupción

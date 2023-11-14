@@ -3,13 +3,13 @@
 .stack 100h
 .data
     teclaanterior db 0
-    esenter db " es un enter",0dh,0ah,24h
+    esenter db "ENTER",0dh,0ah,24h
 
 .code
 public esletra
 esletra proc
 
-
+    
 mov teclaanterior, al
 mov dx,0
 ;Uso SI para antirebote? quizas se pueda borrar
