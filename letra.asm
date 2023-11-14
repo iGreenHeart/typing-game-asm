@@ -10,21 +10,6 @@ esletra proc
 
 mov teclaanterior, al
 
-
-backslash:
-    cmp teclaanterior, 0EH
-    jne letraesA
-    mov ah, 2
-    mov dl, 08h
-    int 21h
-    mov ah, 2
-    mov dl, 20h
-    int 21h
-    mov ah, 2
-    mov dl, 08h
-    int 21h
-    ret
-
 LetraesA:
 ;Es A?
     cmp teclaanterior, 1Eh
