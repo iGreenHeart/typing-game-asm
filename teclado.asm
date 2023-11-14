@@ -4,6 +4,8 @@
 .data
     rebote db 0
     palabra db 255 dup (24h),0dh,0ah,24h
+    flagincremento dw 00
+    flagenter dw 00
 
 .code
 extrn esletra:proc
@@ -26,13 +28,16 @@ esperar_tecla:
     mov [bx], dl 
     inc bx  
     inc cx
- jmp esperar_tecla_enter
-
 esperar_tecla_enter:
     in al, 60h
 
-    cmp al, 2Ch      ;Chequeo si es un enter
-    je fin_programa
+    mov flagenter,dx
+    cmp flagenter, 0
+    
+    je esperar_tecla
+
+    cmp al, 1Ch      ;Chequeo si es un enter
+    je imprimop
 
     cmp al, 0EH     ;Chequeo si es un backspace
     je backspace
@@ -42,12 +47,17 @@ esperar_tecla_enter:
     mov rebote, al
 
 ;    lea bx, palabra
+    xor si, si
     call esletra
+    mov flagincremento, si
+    cmp flagincremento, 0
+    je esperar_tecla_enter
     mov [bx], dl 
     inc bx
     cmp cx, 10
     je imprimop
     inc cx
+
 jmp esperar_tecla_enter
 
 backspace:              ; Borra la última tecla, y devuelve el puntero a la tecla anterior
@@ -66,9 +76,9 @@ backspace:              ; Borra la última tecla, y devuelve el puntero a la tec
 
 
 imprimop:
-mov ah, 9
-mov dx, offset palabra
-int 21h
+    mov ah, 9
+    mov dx, offset palabra
+    int 21h
 
 fin_programa:
     mov al, 0           ; Configurar AL en 0 para deshabilitar la interrupción del teclado
