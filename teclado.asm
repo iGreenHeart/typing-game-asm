@@ -9,6 +9,7 @@
     espacio db 0dh,0ah,24h
     anotado db "tenes esto anotado:",0dh,0ah,24h
 
+
 .code
 extrn esletra:proc
 
@@ -19,11 +20,13 @@ mov ds, ax
 inicio:
     mov al, 1           ; Configurar AL en 1 para habilitar la interrupción del teclado
     out 64h, al         ; Enviar 1 al puerto 64h (puerto de control del teclado)
-    xor cx, cx
-    mov ah,08h              
+
+;Por alguna razón, esto sirve para limpiar el buffer! Cuando inicio el programa el último 
+;enter presionado, queda guardado en el buffer.
+    mov ah,08h    
     int 21h
   
-
+lea bx, palabra
 esperar_tecla:
     in al, 60h ; Leer la tecla desde el puerto 60h del teclado
 
@@ -34,19 +37,14 @@ esperar_tecla:
     cmp al, 0eH     ;Chequeo si es un backspace
     je backspace
 
-    lea bx, palabra
     call esletra 
 
-    cmp al, 1ch
+    cmp al, 1ch     ;Chequeo si es un enter
     je imprimop 
 
-    je esperar_tecla
-    mov [bx], dl 
-    inc bx
+ 
     je imprimop
-
-
-jmp esperar_tecla
+jmp esperar_tecla    ;Reinicio el loop
 
 
 
@@ -65,7 +63,7 @@ backspace:              ; Borra la última tecla, y devuelve el puntero a la tec
     jmp esperar_tecla 
 
 
-imprimop:
+imprimop: ;Imprimo lo que tengo en palabra
     mov ah, 9
     mov dx, offset anotado
     int 21h
@@ -75,7 +73,7 @@ imprimop:
     mov ah, 9
     mov dx, offset palabra
     int 21h
-fin_programa:
+fin_programa: 
     mov al, 0           ; Configurar AL en 0 para deshabilitar la interrupción del teclado
     out 64h, al         ; Enviar 0 al puerto 64h para deshabilitar la interrupción
     mov ax,4c00h       
