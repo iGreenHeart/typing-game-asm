@@ -14,8 +14,8 @@
 extrn esletra:proc
 
 main proc
-mov ax, @data
-mov ds, ax
+    mov ax, @data
+    mov ds, ax
 
 inicio:
     mov al, 1           ; Configurar AL en 1 para habilitar la interrupción del teclado
@@ -48,16 +48,17 @@ esperar_tecla:
 
 backspace:              ; Borra la última tecla, y devuelve el puntero a la tecla anterior
 ;Borro, imprimo un espacio y lo borro. De esta manera piso el espacio.
+    dec bx
     mov ah, 2
     mov dl, 08h
     int 21h
     mov ah, 2
     mov dl, 20h
     int 21h
+    mov [bx], dl
     mov ah, 2
     mov dl, 08h
     int 21h
-    dec bx
     jmp esperar_tecla 
 
 imprimop: ;Imprimo lo que tengo en palabra

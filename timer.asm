@@ -32,7 +32,6 @@ leotimer:
 	cmp bx, 18
 	je imprimoseg
 
-
 sigo:
 	dec bx
 	jnz tickref
