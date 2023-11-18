@@ -6,6 +6,8 @@
 	tiempo db 0dh,0ah,24h
 	terminaste db "Pasaron 4 segundos",0dh,0ah,24h
 	segundos db "segundo",0dh,0ah,24h
+	variable dw 0
+
 
 .code
 	public timer
@@ -18,11 +20,11 @@ timer proc
 tickref: ;tick del clock referencia
 	mov ah, 00h 
 	int 1ah 
-	mov si, dx
+	mov variable, dx
 leotimer:
 	mov ah, 00h ; cx:dx
 	int 1ah  
-	cmp si, dx
+	cmp variable, dx
 	je leotimer
 
 	cmp bx, 55
