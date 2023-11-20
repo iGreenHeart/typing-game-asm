@@ -11,11 +11,13 @@
 
 
 .code
+
 extrn esletra:proc
 
-main proc
-mov ax, @data
-mov ds, ax
+public teclado
+
+    teclado proc
+
 
 inicio:
     mov al, 1           ; Configurar AL en 1 para habilitar la interrupción del teclado
@@ -26,7 +28,12 @@ inicio:
 ;apretas un "enter", y ese enter queda guardado hasta que se ingrese otra cosa.
     mov ah,08h    
     int 21h
-  
+    
+    ;guardar tick inicial
+    ;llamar a timer enviando el tck inicial
+    ;revisar el registro donde timer guarda el tck actual
+
+
     lea bx, palabra     ;Apunto bx a palabra para la función
 esperar_tecla:
     in al, 60h ; Leer la tecla desde el puerto 60h del teclado
@@ -74,8 +81,11 @@ imprimop: ;Imprimo lo que tengo en palabra
 fin_programa: 
     mov al, 0           ; Configurar AL en 0 para deshabilitar la interrupción del teclado
     out 64h, al         ; Enviar 0 al puerto 64h para deshabilitar la interrupción
-    mov ax,4c00h       
-    int 21h             
-main endp
+    ;mov ax,4c00h       
+    ;int 21h   
+
+    ret
+
+    teclado endp
 end
 

@@ -8,12 +8,10 @@
 	segundos db "segundo",0dh,0ah,24h
 
 .code
+
 	public timer
 
-mov ax, @data
-mov ds, ax
-
-timer proc
+	timer proc
 	mov bx, 73 ; Timeout de 4 segundos >>>> 18,2 x 4 ticks
 tickref: ;tick del clock referencia
 	mov ah, 00h 
@@ -32,6 +30,7 @@ leotimer:
 	cmp bx, 18
 	je imprimoseg
 
+	
 
 sigo:
 	dec bx
@@ -49,7 +48,9 @@ final:
 	int 21h
 
 exit:
-	mov ax,4c00h
-	int 21h     ;volver al DOS
-timer endp
+	;mov ax,4c00h
+	;int 21h     ;volver al DOS
+
+	ret
+	timer endp
 end
