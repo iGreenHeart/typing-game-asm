@@ -11,17 +11,15 @@ esletra proc
 
     
 mov teclaanterior, al
-mov dx,0
 ;Uso SI para antirebote? quizas se pueda borrar
 
 chekenter:
-cmp teclaanterior, 1ch
-jne LetraesA
-mov ah, 9
-mov dx, offset esenter
-int 21h
-ret
-
+    cmp teclaanterior, 1ch
+    jne LetraesA
+    mov ah, 9
+    mov dx, offset esenter
+    int 21h
+    ret
 
 LetraesA:
 ;Es A?
@@ -264,7 +262,6 @@ sigo:
 
 ret
 retorno: 
-mov dx, 1 ;contador
 ret
 esletra endp
 end

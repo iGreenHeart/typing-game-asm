@@ -1,0 +1,134 @@
+.8086
+.model small
+.stack 100h
+.data
+    ;MENÚ - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+    mensajePalabra db "Palabra: ", 24h
+    mensajePuntos db "Puntos: ", 24h
+    palabra db "MATE", 0dh, 0ah, 24h
+    puntos db "0", 0dh, 0ah, 24h
+    mensajeTiempo db "Tenes 4 segundos, empezando ya!", 0dh, 0ah, 24h
+    ;VITALES - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+    lectura db 255 dup (24h),0dh,0ah,24h
+    rebote db 0
+    tickinicial dw 0
+    ticks dw 0
+    ;EXTRA - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+    flagseg dw 0
+    espacio db 0dh,0ah,24h
+    anotado db "tenes esto anotado: ",24h
+    segundos db " SEG " ,24h
+    terminaste db "Pasaron 4 segundos",0dh,0ah,24h
+
+.code
+extrn esletra:proc
+
+teclado proc
+    mov ax, @data
+    mov ds, ax
+
+inicio:
+    mov al, 1           ; Configurar AL en 1 para habilitar la interrupciónión del teclado
+    out 64h, al         ; Enviar 1 al puerto 64h (puerto de control del teclado)
+
+;Querido lector, no te das una idea cuanto tiempo investigué para hacer esta pequeña operación
+;ESTO LIMPIA EL MALDITO BUFFER DEL TECLADO WOOOOO
+    mov al, 0FFh
+    out 60h, al
+    in al, 60h
+    mov rebote, al
+
+    lea bx, lectura     ;Apunto bx a lectura, aquí se guardará lo que lea el teclado.
+menu:                   ;Imprimo el menú       
+    mov ah, 9                   
+    mov dx, offset mensajePuntos    
+    int 21h 
+    mov ah, 9                   
+    mov dx, offset puntos   
+    int 21h 
+    mov ah, 9                  
+    mov dx, offset mensajeTiempo  
+    int 21h    
+    mov ah, 9                  
+    mov dx, offset mensajePalabra   
+    int 21h  
+    mov ah, 9                  
+    mov dx, offset palabra  
+    int 21h 
+    mov ah, 9
+    mov dx, offset espacio
+    int 21h
+
+tickref: ;tick del clock referencia 
+    mov ah, 00h 
+    int 1ah 
+    mov tickinicial, dx 
+
+timer: ;Compara la referencia con una muestra actual, la resta. Si es mayor a 4 segundos finaliza el programa!
+    mov ah, 00h 
+    int 1ah
+    mov ticks, dx   
+    mov ax, ticks
+    sub ax, tickinicial
+    cmp ax, 72 ; 4 segundos en ticks a una frecuencia de 18.2 Hz
+    jg imprimosegfin
+
+;en cuanto al rebote: Las teclas tienen señales DOWN y UP, cuando apretas una tecla envias una señal DOWN
+;y la misma cuando la soltas, envia una UP. El anti-rebote (para evitar que imprima como loco), guarda esa señal UP
+;la cual cambia si hay una señal nueva disponible en el puerto del teclado.
+esperar_tecla:
+    in al, 60h       ;traigo la letra
+    cmp rebote, al   ;Comparo si no hay un caracter nuevo esperando
+    je timer
+    mov rebote, al
+
+llamada:
+    call esletra
+    ;En esta función, compara cada letra del teclado y la devuelve en DL
+    ;Guarda en [bx] lo que tengo en dl, e incrementa
+    cmp al, 0eH     ;Chequeo si es un backspace, si es salta para borrar 
+    je backspace
+    
+    cmp al, 1ch     ;Chequeo si es un enter, si es salta para finalizar
+    je imprimop 
+
+    jmp timer
+backspace:              ; Borra la última tecla, y devuelve el puntero a la tecla anterior
+;Borro, imprimo un espacio y lo borro. De esta manera piso el espacio.
+    dec bx
+    mov ah, 2
+    mov dl, 08h
+    int 21h
+    mov ah, 2
+    mov dl, 20h
+    int 21h
+    mov [bx], dl
+    mov ah, 2
+    mov dl, 08h
+    int 21h
+    jmp tickref 
+
+imprimosegfin: 
+    mov ah,9
+    mov dx, offset terminaste
+    int 21h
+        
+imprimop: ;Imprimo lo que tengo en palabra
+    mov ah, 9
+    mov dx, offset anotado
+    int 21h
+    mov ah, 9
+    mov dx, offset espacio
+    int 21h
+    mov ah, 9
+    mov dx, offset lectura
+    int 21h
+
+fin_programa: 
+    mov al, 0           ; Configurar AL en 0 para deshabilitar la interrupción del teclado
+    out 64h, al         ; Enviar 0 al puerto 64h para deshabilitar la interrupción
+    mov ax,4c00h       
+    int 21h             
+teclado endp
+end
+

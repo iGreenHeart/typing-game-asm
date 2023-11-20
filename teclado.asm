@@ -11,11 +11,19 @@
 
 
 .code
+
 extrn esletra:proc
 
+<<<<<<< HEAD
+public teclado
+
+    teclado proc
+
+=======
 main proc
-mov ax, @data
-mov ds, ax
+    mov ax, @data
+    mov ds, ax
+>>>>>>> 56dde44accee9f08962c7ddfb023d80cd72424d5
 
 inicio:
     mov al, 1           ; Configurar AL en 1 para habilitar la interrupción del teclado
@@ -26,7 +34,12 @@ inicio:
 ;apretas un "enter", y ese enter queda guardado hasta que se ingrese otra cosa.
     mov ah,08h    
     int 21h
-  
+    
+    ;guardar tick inicial
+    ;llamar a timer enviando el tck inicial
+    ;revisar el registro donde timer guarda el tck actual
+
+
     lea bx, palabra     ;Apunto bx a palabra para la función
 esperar_tecla:
     in al, 60h ; Leer la tecla desde el puerto 60h del teclado
@@ -48,16 +61,17 @@ esperar_tecla:
 
 backspace:              ; Borra la última tecla, y devuelve el puntero a la tecla anterior
 ;Borro, imprimo un espacio y lo borro. De esta manera piso el espacio.
+    dec bx
     mov ah, 2
     mov dl, 08h
     int 21h
     mov ah, 2
     mov dl, 20h
     int 21h
+    mov [bx], dl
     mov ah, 2
     mov dl, 08h
     int 21h
-    dec bx
     jmp esperar_tecla 
 
 imprimop: ;Imprimo lo que tengo en palabra
@@ -74,8 +88,11 @@ imprimop: ;Imprimo lo que tengo en palabra
 fin_programa: 
     mov al, 0           ; Configurar AL en 0 para deshabilitar la interrupción del teclado
     out 64h, al         ; Enviar 0 al puerto 64h para deshabilitar la interrupción
-    mov ax,4c00h       
-    int 21h             
-main endp
+    ;mov ax,4c00h       
+    ;int 21h   
+
+    ret
+
+    teclado endp
 end
 
