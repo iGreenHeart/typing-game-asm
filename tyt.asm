@@ -148,12 +148,19 @@ imprimosegfin:
     int 21h
     jmp fallo
         
-finteclado: ;Imprimo lo que tengo en palabra        
-    mov ah, lectura
-    mov bh , palabramain
-    cmp ah, bh 
+finteclado: ;Imprimo lo que tengo en palabra
+    mov si, 0
+comparo:
+    mov ah, lectura[si]
+    mov bh , palabramain[si]
+    cmp lectura[si],24h
+    je verifico 
+    inc si 
+    jmp comparo
+verifico:
+    cmp ah, bh
     je acierto
-    jmp fallo
+    jmp fallo    
 
 acierto:
     mov ah, 9
@@ -168,7 +175,7 @@ fallo:
     out 60h, al
     in al, 60h
     mov rebote, al
-    mov cl, 0 
+    mov cl, 1 
     ret
 
 terminar:

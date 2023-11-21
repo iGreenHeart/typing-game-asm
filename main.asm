@@ -8,7 +8,7 @@
     readchar db 20h
     palabra db 255 dup ("$"), 24h
     cantSlash db 0
-    random db 1
+    random db 0
     score db 000
     randomant dw 0
     ;MENSAJES
@@ -119,7 +119,7 @@ eof:
     mov bl, score           ;move a bl el score que teniamos
     add bl, cl              ;le agregamos el score nuevo
     mov score, bl           ;lo guardamos en la variable
-    cmp cl,1               ;ve si cl tiene un 1 o no porque CL trae un 1 de la funcion si la persona escribio bien la palabra
+    cmp cl, 1               ;ve si cl tiene un 1 o no porque CL trae un 1 de la funcion si la persona escribio bien la palabra
     je continuar 
                             ;si Cl no es un 1, imprime los carteles para saber si queres seguir jugando o no
     mov score, 0
