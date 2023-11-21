@@ -12,7 +12,7 @@
     random db 0
     score db 0
 .code
-    extrn teclado:proc
+   ; extrn teclado:proc
 
 
 main proc
@@ -86,7 +86,7 @@ cantidadSlash:
 eof:
     lea cx, score
     lea bx, palabra
-    call teclado
+   ; call teclado
     add score, cl
     cmp ax, 1
     je finprograma 
