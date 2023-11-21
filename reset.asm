@@ -8,14 +8,13 @@ public reseteo
 	reseteo proc
 
 limpio:
-	cmp [bx], 24h
+	cmp byte ptr[di], 24h
 	je salir
-	cmp [bx], 0dh
+	cmp byte ptr[di], 0dh
 	je salir
-	mov [bx], 24h
-	inc bx
+	mov byte ptr[di], 24h
+	inc di
 	jmp limpio
-
 salir:
 	ret
 	reseteo endp

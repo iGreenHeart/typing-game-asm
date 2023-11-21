@@ -5,8 +5,8 @@
     ;MENÚ - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
     mensajePalabra db "Palabra: ", 24h
     mensajePuntos db "Puntos: ", 24h
-    palabra db 255 dup (24h), 0dh, 0ah, 24h
-    puntaje dw 255 dup (24h), 0dh, 0ah, 24h
+    palabramain db 255 dup (24h), 0dh, 0ah, 24h
+    puntaje db "000", 0dh, 0ah, 24h
     mensajeTiempo db "Tenes 4 segundos, empezando ya!", 0dh, 0ah, 24h
     ;VITALES - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
     lectura db 255 dup (24h),0dh,0ah,24h
@@ -21,8 +21,7 @@
     segundos db " SEG " ,24h
     terminaste db "Pasaron 4 segundos",0dh,0ah,24h
     aciertapalabra db "Sos un groso: ", 0dh,0ah,24h
-    fallapalabra1 db "GAME OVER, REINTENTAR?",0dh,0ah,24h
-    fallapalabra2 db "Y/N?",0dh,0ah,24h
+
 
 
 .code
@@ -34,18 +33,31 @@ public teclado
 teclado proc
     mov ax, @data
     mov ds, ax
+    xor si, si
 
-    mov al, cl
-    lea bx, puntaje
+    ;mov al, cl
+    lea si, puntaje
+    add si, 2
     call reg2ascii
+    lea si, palabramain
+limpiar:
+    cmp byte ptr[si], 24h
+    je precargo
+    cmp byte ptr[si], 0dh
+    je precargo
+    mov byte ptr[si], 24h
+    inc si
+    jmp limpiar
 
-
+precargo:
+ xor si,si  
 cargo:
     cmp byte ptr[bx],24h
     je inicioprograma
     mov ah,[bx]
-    mov palabra, ah
+    mov palabramain[si], ah
     inc bx
+    inc si
     jmp cargo
 
 
@@ -75,7 +87,7 @@ menu:                   ;Imprimo el menú
     mov dx, offset mensajePalabra   
     int 21h  
     mov ah, 9                  
-    mov dx, offset palabra  
+    mov dx, offset palabramain  
     int 21h 
     mov ah, 9
     mov dx, offset espacio
@@ -136,9 +148,9 @@ imprimosegfin:
     int 21h
     jmp fallo
         
-finteclado: ;Imprimo lo que tengo en palabra
+finteclado: ;Imprimo lo que tengo en palabra        
     mov ah, lectura
-    mov bh , palabra
+    mov bh , palabramain
     cmp ah, bh 
     je acierto
     jmp fallo
@@ -147,25 +159,16 @@ acierto:
     mov ah, 9
     mov dx, offset aciertapalabra
     int 21h
+    xor cx, cx
     mov cl, 1
     ret
 
 fallo:
-    mov ah, 9
-    mov dx, offset fallapalabra1
-    int 21h
-    mov ah, 9
-    mov dx, offset fallapalabra2
-    int 21h
-    mov ah, 2
-    int 21h
-    cmp dl, 59h
-    je continuar
-    cmp dl, 79h
-    je continuar
-    jmp terminar
-
-continuar:
+    mov al, 0FFh
+    out 60h, al
+    in al, 60h
+    mov rebote, al
+    mov cl, 0 
     ret
 
 terminar:
