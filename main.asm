@@ -12,15 +12,16 @@
     random db 0
     score db 0
 .code
-    extrn teclado:proc
+extrn teclado:proc
 
 
 main proc
 
     mov ax,@data
     mov ds,ax
-      
+inicio:      
     call Clearscreen
+    
 
     lea si,palabra
     lea dx,archivo
@@ -83,14 +84,15 @@ cantidadSlash:
     add cantSlash, 1
     jmp char
  
-eof:
+eof:  
+    xor si, si
     lea cx, score
     lea bx, palabra
     call teclado
     add score, cl
     cmp ax, 1
     je finprograma 
-    jmp main
+    jmp inicio  
 
 
 finprograma:
@@ -119,4 +121,4 @@ proc Clearscreen
 	ret 
 Clearscreen endp
 
-end main
+end 

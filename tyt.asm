@@ -5,7 +5,7 @@
     ;MENÚ - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
     mensajePalabra db "Palabra: ", 24h
     mensajePuntos db "Puntos: ", 24h
-    palabra db 255 dup (24h), 0dh, 0ah, 24h
+    palabramain db 255 dup (24h), 0dh, 0ah, 24h
     puntaje dw 255 dup (24h), 0dh, 0ah, 24h
     mensajeTiempo db "Tenes 4 segundos, empezando ya!", 0dh, 0ah, 24h
     ;VITALES - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
@@ -35,16 +35,15 @@ teclado proc
     mov ax, @data
     mov ds, ax
 
-    mov al, cl
-    lea bx, puntaje
-    call reg2ascii
-
+    ;mov al, cl
+    ;lea bx, puntaje
+    ;call reg2ascii
 
 cargo:
     cmp byte ptr[bx],24h
     je inicioprograma
     mov ah,[bx]
-    mov palabra, ah
+    mov palabramain, ah
     inc bx
     jmp cargo
 
@@ -75,7 +74,7 @@ menu:                   ;Imprimo el menú
     mov dx, offset mensajePalabra   
     int 21h  
     mov ah, 9                  
-    mov dx, offset palabra  
+    mov dx, offset palabramain  
     int 21h 
     mov ah, 9
     mov dx, offset espacio
@@ -136,9 +135,9 @@ imprimosegfin:
     int 21h
     jmp fallo
         
-finteclado: ;Imprimo lo que tengo en palabra
+finteclado: ;Imprimo lo que tengo en palabra        
     mov ah, lectura
-    mov bh , palabra
+    mov bh , palabramain
     cmp ah, bh 
     je acierto
     jmp fallo
@@ -157,11 +156,11 @@ fallo:
     mov ah, 9
     mov dx, offset fallapalabra2
     int 21h
-    mov ah, 2
-    int 21h
-    cmp dl, 59h
+    mov ah, 00h 
+    int 16h
+    cmp al, 59h
     je continuar
-    cmp dl, 79h
+    cmp al, 79h
     je continuar
     jmp terminar
 
