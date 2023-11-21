@@ -7,7 +7,8 @@
 
 public reg2ascii
 
-;recibe en bx el offset apuntado al final
+;recibe en SI el offset apuntado al final y divide el registro que ingresa por CL por 10 para convertirlo en un numero decimal que se guarda en la variable
+;para luego printear
 	reg2ascii proc
 
 	push ax
@@ -15,12 +16,13 @@ public reg2ascii
 	push dx
 
 	mov ah, 0
-	mov al, cl  ;le paso el reg a AL aca es lo mismo que poner DL
-	mov dl, 10
+	mov al, cl  ;le paso el reg a AL aca es lo mismo que poner CL
+	mov dl, 10  ;
 	mov cx, 3
 convierto:
 	div dl
-	add [si],ah
+	add ah, 30h
+	mov [si],ah
 	mov ah,0
 	dec si
 loop convierto	

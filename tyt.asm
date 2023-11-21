@@ -35,7 +35,7 @@ teclado proc
     mov ds, ax
     xor si, si
 
-    mov al, cl
+    ;mov al, cl
     lea si, puntaje
     add si, 2
     call reg2ascii
@@ -173,6 +173,7 @@ fallo:
     out 60h, al
     in al, 60h
     mov rebote, al
+    mov cl, 0 
     ret
 
 terminar:

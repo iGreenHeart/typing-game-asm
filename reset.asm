@@ -15,7 +15,6 @@ limpio:
 	mov byte ptr[di], 24h
 	inc di
 	jmp limpio
-
 salir:
 	ret
 	reseteo endp
