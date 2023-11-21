@@ -5,29 +5,51 @@
     ;MENÚ - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
     mensajePalabra db "Palabra: ", 24h
     mensajePuntos db "Puntos: ", 24h
-    palabra db "MATE", 0dh, 0ah, 24h
-    puntos db "0", 0dh, 0ah, 24h
+    palabra db 255 dup (24h), 0dh, 0ah, 24h
+    puntaje dw 255 dup (24h), 0dh, 0ah, 24h
     mensajeTiempo db "Tenes 4 segundos, empezando ya!", 0dh, 0ah, 24h
     ;VITALES - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
     lectura db 255 dup (24h),0dh,0ah,24h
     rebote db 0
     tickinicial dw 0
     ticks dw 0
+    puntos db 0
     ;EXTRA - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
     flagseg dw 0
     espacio db 0dh,0ah,24h
     anotado db "tenes esto anotado: ",24h
     segundos db " SEG " ,24h
     terminaste db "Pasaron 4 segundos",0dh,0ah,24h
+    aciertapalabra db "Sos un groso: ", 0dh,0ah,24h
+    fallapalabra1 db "GAME OVER, REINTENTAR?",0dh,0ah,24h
+    fallapalabra2 db "Y/N?",0dh,0ah,24h
+
 
 .code
 extrn esletra:proc
+extrn reg2ascii:proc
+public teclado 
+
 
 teclado proc
     mov ax, @data
     mov ds, ax
 
-inicio:
+    mov al, cl
+    lea bx, puntaje
+    call reg2ascii
+
+
+cargo:
+    cmp byte ptr[bx],24h
+    je inicioprograma
+    mov ah,[bx]
+    mov palabra, ah
+    inc bx
+    jmp cargo
+
+
+inicioprograma:
     mov al, 1           ; Configurar AL en 1 para habilitar la interrupciónión del teclado
     out 64h, al         ; Enviar 1 al puerto 64h (puerto de control del teclado)
 
@@ -44,7 +66,7 @@ menu:                   ;Imprimo el menú
     mov dx, offset mensajePuntos    
     int 21h 
     mov ah, 9                   
-    mov dx, offset puntos   
+    mov dx, offset puntaje   
     int 21h 
     mov ah, 9                  
     mov dx, offset mensajeTiempo  
@@ -90,7 +112,7 @@ llamada:
     je backspace
     
     cmp al, 1ch     ;Chequeo si es un enter, si es salta para finalizar
-    je imprimop 
+    je finteclado 
 
     jmp timer
 backspace:              ; Borra la última tecla, y devuelve el puntero a la tecla anterior
@@ -112,23 +134,43 @@ imprimosegfin:
     mov ah,9
     mov dx, offset terminaste
     int 21h
+    jmp fallo
         
-imprimop: ;Imprimo lo que tengo en palabra
-    mov ah, 9
-    mov dx, offset anotado
-    int 21h
-    mov ah, 9
-    mov dx, offset espacio
-    int 21h
-    mov ah, 9
-    mov dx, offset lectura
-    int 21h
+finteclado: ;Imprimo lo que tengo en palabra
+    mov ah, lectura
+    mov bh , palabra
+    cmp ah, bh 
+    je acierto
+    jmp fallo
 
-fin_programa: 
-    mov al, 0           ; Configurar AL en 0 para deshabilitar la interrupción del teclado
-    out 64h, al         ; Enviar 0 al puerto 64h para deshabilitar la interrupción
-    mov ax,4c00h       
-    int 21h             
+acierto:
+    mov ah, 9
+    mov dx, offset aciertapalabra
+    int 21h
+    mov cl, 1
+    ret
+
+fallo:
+    mov ah, 9
+    mov dx, offset fallapalabra1
+    int 21h
+    mov ah, 9
+    mov dx, offset fallapalabra2
+    int 21h
+    mov ah, 2
+    int 21h
+    cmp dl, 59h
+    je continuar
+    cmp dl, 79h
+    je continuar
+    jmp terminar
+
+continuar:
+    ret
+
+terminar:
+    mov ax, 1
+    ret        
 teclado endp
 end
 
