@@ -20,17 +20,16 @@ public reg2ascii
 	mov cx, 3
 convierto:
 	div dl
-	add [bx],ah
+	add [si],ah
 	mov ah,0
-	dec bx
+	dec si
 loop convierto	
 
 	pop dx
 	pop cx
 	pop ax
-	pop bp
 
-
+	
 	ret 
 	reg2ascii endp
 end
