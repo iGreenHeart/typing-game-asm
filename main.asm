@@ -8,7 +8,8 @@
     readchar db 20h
     palabra db 255 dup ("$"), 24h
     cantSlash db 0
-    random db 0
+    randomant dw 0
+    random db 1
     score db 000
     ;MENSAJES
     filerror db "Archivo no existe o error de apertura", 0dh, 0ah, '$'
@@ -23,18 +24,20 @@ main proc
 
     mov ax,@data
     mov ds,ax
+
     jmp inicio
 reset:
+
     lea di, palabra
     call reseteo ;Función de reinicio
     mov cantSlash,0
+    mov word ptr [filehandler], 0
+    mov readchar, 20h
+
     xor ax,ax
     xor bx,bx 
     xor cx,cx
     xor dx,dx
-    mov word ptr [filehandler], 0
-    mov readchar, 20h
-    mov score, 000
     
 inicio: 
     call Clearscreen ;Función de limpiado de pantalla
