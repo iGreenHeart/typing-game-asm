@@ -35,10 +35,11 @@ teclado proc
     mov ds, ax
     xor si, si
 
-    ;mov al, cl
+    mov al, cl
     lea si, puntaje
     add si, 2
     call reg2ascii
+
     lea si, palabramain
 limpiar:
     cmp byte ptr[si], 24h
@@ -50,7 +51,18 @@ limpiar:
     jmp limpiar
 
 precargo:
- xor si,si  
+ xor si,si 
+    lea si, lectura
+limpiar1:
+    cmp byte ptr[si], 24h
+    je precargo2
+    cmp byte ptr[si], 0dh
+    je precargo2
+    mov byte ptr[si], 24h
+    inc si
+    jmp limpiar1
+precargo2:
+ xor si,si
 cargo:
     cmp byte ptr[bx],24h
     je inicioprograma
@@ -175,7 +187,7 @@ fallo:
     out 60h, al
     in al, 60h
     mov rebote, al
-    mov cl, 1 
+    mov cl, 0 
     ret
 
 terminar:

@@ -37,6 +37,13 @@ reset:                      ;reseteo todo
     mov word ptr [filehandler], 0
     mov readchar, 20h
     add random, 1
+    cmp random, 50
+    je exceso
+    jmp inicio
+exceso:
+    mov random,0
+      
+
 
     
     
@@ -47,7 +54,7 @@ inicio:
     mov ah,3dH              ; abrir el archivo
     mov al,0                ;abrirlo en modo lectura
     int 21H  
-    jc openerr               ;si hay carry significa que abrio mal
+    ;jc openerr               ;si hay carry significa que abrio mal
     mov word ptr[filehandler], ax  ;almacenar el descriptor de archivo
 
     mov cx, 0
@@ -109,7 +116,9 @@ cantidadSlash:              ;esta funcion es la que entra cuando detecta un / pa
     add cantSlash, 1        ;aumenta la cant de / en 1 
     jmp char
  
-eof:  
+eof:
+    mov ah, 3Eh
+    int 21h  
     mov cl, score           ;movemos el score guardado en cl
     lea bx, palabra         ;movemos el offset de palabra
 
