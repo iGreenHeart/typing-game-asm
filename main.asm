@@ -47,10 +47,6 @@ reset:                      ;reseteo todo
 exceso:
     mov random,0
       
-
-
-    
-
 inicio: 
     call Clearscreen        ;Función de limpiado de pantalla
     lea si,palabra
@@ -121,7 +117,6 @@ cantidadSlash:              ;esta funcion es la que entra cuando detecta un / pa
     add cantSlash, 1        ;aumenta la cant de / en 1 
     jmp char
 
- 
 eof:
     mov ah, 3Eh
     int 21h  
