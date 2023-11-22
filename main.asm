@@ -50,7 +50,7 @@ inicio:
     lea dx,archivo
     mov ah,3dH              ; abrir el archivo
     mov al,0                ;abrirlo en modo lectura
-    int 21H  
+    int 21h 
     jc openerr               ;si hay carry significa que abrio mal
     mov word ptr[filehandler], ax  ;almacenar el descriptor de archivo
 
@@ -112,6 +112,7 @@ cantidadSlash:              ;esta funcion es la que entra cuando detecta un / pa
 
     add cantSlash, 1        ;aumenta la cant de / en 1 
     jmp char
+
  
 eof:  
     mov cl, score           ;movemos el score guardado en cl
