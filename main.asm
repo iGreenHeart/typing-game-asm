@@ -6,11 +6,12 @@
     archivo db "datos.txt", "$"
     filehandler dw 00h,00h
     readchar db 20h
+    semilla dw 0
     palabra db 255 dup ("$"), 24h
     cantSlash db 0
-    randomant dw 0
-    random db 1
+    random db 0
     score db 000
+    verifico dw 0
     ;MENSAJES
     filerror db "Archivo no existe o error de apertura", 0dh, 0ah, '$'
     charactererror db "Error de lectura de caracter", 0dh, 0ah, '$'
@@ -25,6 +26,19 @@ main proc
     mov ax,@data
     mov ds,ax
 
+    mov ah, 2Ch
+    int 21h
+    add dh, ch  ; Combina CH y DH para obtener un valor más único
+    mov semilla, dx
+
+    ; Llama a la interrupción personalizada y actualiza la semilla
+    mov ax, semilla
+    int 81h
+    mov semilla, ax  ; al tiene un valor
+    mov random, dl
+
+
+
     jmp inicio
 
 reset:                      ;reseteo todo  
@@ -32,25 +46,25 @@ reset:                      ;reseteo todo
     lea di, palabra
     call reseteo            ;limpia la variable palabra
     mov cantSlash,0
-    mov word ptr [filehandler], 0
-    mov readchar, 20h
+
+ mov ah, 2Ch
+    int 21h
+    add dh, ch  ; Combina CH y DH para obtener un valor más único
+    mov semilla, dx
+
+    ; Llama a la interrupción personalizada y actualiza la semilla
+    mov ax, semilla
+    int 81h
+    mov semilla, ax  ; al tiene un valor
+    mov random, dl
 
     xor ax,ax
     xor bx,bx 
     xor cx,cx
     xor dx,dx
-
-    add random, 1
-    cmp random, 50
-    je exceso
-    jmp inicio
-exceso:
-    mov random,0
-      
-
-
+    mov word ptr [filehandler], 0
+    mov readchar, 20h    
     
-
 inicio: 
     call Clearscreen        ;Función de limpiado de pantalla
     lea si,palabra
