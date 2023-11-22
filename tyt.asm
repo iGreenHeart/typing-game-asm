@@ -142,8 +142,7 @@ llamada:
 
     jmp timer
 backspace:              ; Borra la última tecla, y devuelve el puntero a la tecla anterior
-;Borro, imprimo un espacio y lo borro. De esta manera piso el espacio.
-    dec bx
+                        ;Los servicios 2 borran en pantalla, luego reemplazo con 24h el [bx] a borrar
     mov ah, 2
     mov dl, 08h
     int 21h
@@ -151,10 +150,15 @@ backspace:              ; Borra la última tecla, y devuelve el puntero a la tec
     mov dl, 20h
     int 21h
     mov dl, 24h
-    mov [bx], dl
     mov ah, 2
     mov dl, 08h
     int 21h
+    mov dl, 24h
+    mov [bx], dl
+    cmp bx, 0
+    je tickref
+    dec bx
+    mov [bx], dl
     jmp tickref 
 
 imprimosegfin: 
@@ -173,6 +177,8 @@ comparo:
     mov bh , palabramain[si]
     cmp lectura[si],24h
     je verifico 
+    cmp ah, bh
+    jne fallo
     inc si 
     jmp comparo
 verifico:
