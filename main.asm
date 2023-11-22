@@ -9,10 +9,9 @@
     semilla dw 0
     palabra db 255 dup ("$"), 24h
     cantSlash db 0
-    anterior dw 0
     random db 0
     score db 000
-    randomant dw 0
+    verifico dw 0
     ;MENSAJES
     filerror db "Archivo no existe o error de apertura", 0dh, 0ah, '$'
     charactererror db "Error de lectura de caracter", 0dh, 0ah, '$'
@@ -36,7 +35,7 @@ main proc
     mov ax, semilla
     int 81h
     mov semilla, ax  ; al tiene un valor
-    mov random, ah
+    mov random, dl
 
 
 
@@ -45,8 +44,8 @@ reset:                      ;reseteo todo
     lea di, palabra
     call reseteo            ;limpia la variable palabra
     mov cantSlash,0
-otro:
-    mov ah, 2Ch
+
+ mov ah, 2Ch
     int 21h
     add dh, ch  ; Combina CH y DH para obtener un valor más único
     mov semilla, dx
@@ -54,10 +53,8 @@ otro:
     ; Llama a la interrupción personalizada y actualiza la semilla
     mov ax, semilla
     int 81h
-    cmp random, ah ; comparo el random anterior para comprobar que no sea el mismo dos veces
-    je otro
     mov semilla, ax  ; al tiene un valor
-    mov random, ah
+    mov random, dl
 
     xor ax,ax
     xor bx,bx 
