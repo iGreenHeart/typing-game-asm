@@ -150,6 +150,7 @@ backspace:              ; Borra la última tecla, y devuelve el puntero a la tec
     mov ah, 2
     mov dl, 20h
     int 21h
+    mov dl, 24h
     mov [bx], dl
     mov ah, 2
     mov dl, 08h

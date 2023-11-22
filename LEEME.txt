@@ -1,0 +1,17 @@
+1. Instalar la interrupción del RANDOM
+tasm rand
+tlink /t rand
+rand
+
+2. Compilar el main y sus funciones
+tasm main
+tasm tyt
+tasm r2d 
+tasm letra
+tasm reset
+
+tlink main tyt r2d letra reset
+
+3. Inicializar el main
+rand
+main

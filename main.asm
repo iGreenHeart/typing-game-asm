@@ -37,8 +37,6 @@ main proc
     mov semilla, ax  ; al tiene un valor
     mov random, dl
 
-
-
     jmp inicio
 
 reset:                      ;reseteo todo  
@@ -49,13 +47,13 @@ reset:                      ;reseteo todo
 
  mov ah, 2Ch
     int 21h
-    add dh, ch  ; Combina CH y DH para obtener un valor más único
+    add dh, ch              ; Combina CH y DH para obtener un valor más único
     mov semilla, dx
 
     ; Llama a la interrupción personalizada y actualiza la semilla
     mov ax, semilla
     int 81h
-    mov semilla, ax  ; al tiene un valor
+    mov semilla, ax         ; al tiene un valor
     mov random, dl
 
     xor ax,ax
@@ -139,10 +137,8 @@ eof:
     int 21h  
     mov cl, score           ;movemos el score guardado en cl
     lea bx, palabra         ;movemos el offset de palabra
-
     call teclado            ;llamamos a teclado donde se haran todas las comparaciones 
  
-
     mov bl, score           ;move a bl el score que teniamos
     add bl, cl              ;le agregamos el score nuevo
     mov score, bl           ;lo guardamos en la variable
@@ -196,4 +192,3 @@ proc Clearscreen           ;no se limpia xd
 Clearscreen endp
 
 end
-    

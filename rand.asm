@@ -16,20 +16,14 @@ start:
 Funcion PROC FAR
   sti
   pushf
-      ;recibir un numero por AX que es mi semilla la cual recibi al pedir la hora al sistema
-  
+                      ;recibir un numero por AX que es mi semilla la cual recibi al pedir la hora al sistema
   xor dx, dx
-  mov cx, 50          ; seteo el rango de numeros que quiero que me devuelva
-  div cx             ; ah tiene dicho numero
-
+  mov cx, 90          ; seteo el rango de numeros que quiero que me devuelva
+  div cx              ; ah tiene dicho numero
                       ; el cociente se guarda en AX
                       ; el resto en DX ( como 0-49 es chico, se guarda en DL)
-
   
-  popf 
-
-        
-
+  popf      
   iret
 endp
 
