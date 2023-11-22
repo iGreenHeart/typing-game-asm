@@ -15,28 +15,20 @@ start:
 ;- de las interrupcion capturadas
 ;------------------------------------------------------------------------
 Funcion PROC FAR
-  ; Requiere pasarle un seed por AX
-  ; la sumatoria/secuencia de weyl por SI
-  ; el numero random anterior por DI
-  ; Devuelve el numero random por AX
-  ; la sumatoria/secuencia de weyl por SI
-  ; el numero random anterior por DI
   sti
-  push dx
   pushf
+      ;recibir un numero por AX que es mi semilla la cual recibi al pedir la hora al sistema
+  push dx             ; no romper dx por las dudas
+  add ax, 1           ; agrego 1 para que nunca sea 0 
+  mov dl, 50          ; seteo el rango de numeros que quiero que me devuelva
+  div dl              ; ah tiene dicho numero
 
-  add si, ax    ;Le sumo el seed original a la secuencia de Weyl
 
-  mov ax, di    ;Pongo el numero random anterior en AX
-  mul ax        ;Elevo el numero al cuadrado (multiplico por si mismo)
-  add ax, si    ;Le sumo lo que hay en SI
-  mov dl, ah    ;Intercambio las dos mitades del numero
-  mov ah, al
-  mov al, dl    ;nosotros tenesmos x cantidad de palabras entonces dividir ese numero random por 
-  mov dl, 50
-  div dl        ;ah tiene el numero random entre 0 y 49 que se lo pasaremos a nuestra variable random
-  popf
   pop dx
+  popf 
+
+        
+
   iret
 endp
 
