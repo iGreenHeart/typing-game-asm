@@ -41,6 +41,13 @@ reset:                      ;reseteo todo
     xor dx,dx
 
     add random, 1
+    cmp random, 50
+    je exceso
+    jmp inicio
+exceso:
+    mov random,0
+      
+
 
     
 
@@ -51,7 +58,7 @@ inicio:
     mov ah,3dH              ; abrir el archivo
     mov al,0                ;abrirlo en modo lectura
     int 21H  
-    jc openerr               ;si hay carry significa que abrio mal
+    ;jc openerr               ;si hay carry significa que abrio mal
     mov word ptr[filehandler], ax  ;almacenar el descriptor de archivo
 
     mov cx, 0
@@ -113,7 +120,9 @@ cantidadSlash:              ;esta funcion es la que entra cuando detecta un / pa
     add cantSlash, 1        ;aumenta la cant de / en 1 
     jmp char
  
-eof:  
+eof:
+    mov ah, 3Eh
+    int 21h  
     mov cl, score           ;movemos el score guardado en cl
     lea bx, palabra         ;movemos el offset de palabra
 
@@ -123,7 +132,7 @@ eof:
     mov bl, score           ;move a bl el score que teniamos
     add bl, cl              ;le agregamos el score nuevo
     mov score, bl           ;lo guardamos en la variable
-    cmp cl,1               ;ve si cl tiene un 1 o no porque CL trae un 1 de la funcion si la persona escribio bien la palabra
+    cmp cl, 1               ;ve si cl tiene un 1 o no porque CL trae un 1 de la funcion si la persona escribio bien la palabra
     je continuar 
                             ;si Cl no es un 1, imprime los carteles para saber si queres seguir jugando o no
     mov score, 0

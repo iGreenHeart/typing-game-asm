@@ -35,10 +35,11 @@ teclado proc
     mov ds, ax
     xor si, si
 
-    ;mov al, cl
+    mov al, cl
     lea si, puntaje
     add si, 2
     call reg2ascii
+
     lea si, palabramain
 limpiar:
     cmp byte ptr[si], 24h
@@ -50,7 +51,18 @@ limpiar:
     jmp limpiar
 
 precargo:
- xor si,si  
+ xor si,si 
+    lea si, lectura
+limpiar1:
+    cmp byte ptr[si], 24h
+    je precargo2
+    cmp byte ptr[si], 0dh
+    je precargo2
+    mov byte ptr[si], 24h
+    inc si
+    jmp limpiar1
+precargo2:
+ xor si,si
 cargo:
     cmp byte ptr[bx],24h
     je inicioprograma
@@ -153,12 +165,19 @@ imprimosegfin:
     int 21h
     jmp fallo
         
-finteclado: ;Imprimo lo que tengo en palabra        
-    mov ah, lectura
-    mov bh , palabramain
-    cmp ah, bh 
+finteclado: ;Imprimo lo que tengo en palabra
+    mov si, 0
+comparo:
+    mov ah, lectura[si]
+    mov bh , palabramain[si]
+    cmp lectura[si],24h
+    je verifico 
+    inc si 
+    jmp comparo
+verifico:
+    cmp ah, bh
     je acierto
-    jmp fallo
+    jmp fallo    
 
 acierto:
     mov ah, 9
