@@ -84,7 +84,7 @@ inicioprograma:
     in al, 60h
     mov rebote, al
 
-    lea bx, lectura     ;Apunto bx a lectura, aquí se guardará lo que lea el teclado.
+    
 menu:                   ;Imprimo el menú       
     mov ah, 9                   
     mov dx, offset mensajePuntos    
@@ -109,6 +109,8 @@ tickref: ;tick del clock referencia
     mov ah, 00h 
     int 1ah 
     mov tickinicial, dx 
+    
+    lea bx, lectura     ;Apunto bx a lectura, aquí se guardará lo que lea el teclado.
 
 timer: ;Compara la referencia con una muestra actual, la resta. Si es mayor a 4 segundos finaliza el programa!
     mov ah, 00h 
@@ -155,6 +157,9 @@ backspace:              ; Borra la última tecla, y devuelve el puntero a la tec
     jmp tickref 
 
 imprimosegfin: 
+    mov ah,9
+    mov dx, offset espacio
+    int 21h
     mov ah,9
     mov dx, offset terminaste
     int 21h

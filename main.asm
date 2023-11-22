@@ -40,7 +40,9 @@ main proc
 
 
     jmp inicio
+
 reset:                      ;reseteo todo  
+
     lea di, palabra
     call reseteo            ;limpia la variable palabra
     mov cantSlash,0
@@ -61,8 +63,7 @@ reset:                      ;reseteo todo
     xor cx,cx
     xor dx,dx
     mov word ptr [filehandler], 0
-    mov readchar, 20h
-      
+    mov readchar, 20h    
     
 inicio: 
     call Clearscreen        ;Función de limpiado de pantalla
