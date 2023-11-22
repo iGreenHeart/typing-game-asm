@@ -8,9 +8,9 @@
     readchar db 20h
     palabra db 255 dup ("$"), 24h
     cantSlash db 0
-    random db 0
-    score db 000
     randomant dw 0
+    random db 1
+    score db 000
     ;MENSAJES
     filerror db "Archivo no existe o error de apertura", 0dh, 0ah, '$'
     charactererror db "Error de lectura de caracter", 0dh, 0ah, '$'
@@ -26,16 +26,20 @@ main proc
     mov ds,ax
 
     jmp inicio
+
 reset:                      ;reseteo todo  
+
     lea di, palabra
     call reseteo            ;limpia la variable palabra
     mov cantSlash,0
+    mov word ptr [filehandler], 0
+    mov readchar, 20h
+
     xor ax,ax
     xor bx,bx 
     xor cx,cx
     xor dx,dx
-    mov word ptr [filehandler], 0
-    mov readchar, 20h
+
     add random, 1
     cmp random, 50
     je exceso
@@ -46,7 +50,7 @@ exceso:
 
 
     
-    
+
 inicio: 
     call Clearscreen        ;Función de limpiado de pantalla
     lea si,palabra
