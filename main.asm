@@ -26,6 +26,9 @@ main proc
     mov ax,@data
     mov ds,ax
 
+    mov ax,1
+    int 10h
+
     mov ah, 2Ch
     int 21h
     add dh, ch  ; Combina CH y DH para obtener un valor más único
@@ -137,7 +140,10 @@ eof:
     int 21h  
     mov cl, score           ;movemos el score guardado en cl
     lea bx, palabra         ;movemos el offset de palabra
-    call teclado            ;llamamos a teclado donde se haran todas las comparaciones 
+    call teclado            ;llamamos a teclado donde se haran todas las comparaciones
+     mov ax,1
+    int 10h
+ 
  
     mov bl, score           ;move a bl el score que teniamos
     add bl, cl              ;le agregamos el score nuevo
@@ -166,6 +172,8 @@ continuar:
     jmp reset
 
 finprograma:                ;fin del programa
+    mov ax,2
+    int 10h
     mov ah,4ch 
     int 21H
 main endp
@@ -188,7 +196,8 @@ proc Clearscreen           ;no se limpia xd
     pop cx
     pop es
     pop ax
-    ret 
+    ret
+
 Clearscreen endp
 
 end

@@ -31,8 +31,10 @@ public teclado
 
 
 teclado proc
-    mov ax, @data
-    mov ds, ax
+
+    mov ax,1
+    int 10h
+
     xor si, si
 
     mov al, cl
@@ -156,10 +158,10 @@ backspace:              ; Borra la última tecla, y devuelve el puntero a la tec
     mov dl, 24h
     mov [bx], dl
     cmp bx, 0
-    je tickref
+    je timer
     dec bx
     mov [bx], dl
-    jmp tickref 
+    jmp timer 
 
 imprimosegfin: 
     mov ah,9
